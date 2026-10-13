@@ -30,7 +30,10 @@ public static class Archivos
                     Datos.Estados[i],
                     Datos.Fechas[i],
                     Datos.RecibidoPor[i],
-                    Datos.Movimientos[i]);
+                    Datos.Movimientos[i],
+                    Datos.Telefonos[i],
+                    Datos.Parentescos[i],
+                    Datos.Motivos[i]);
             }
             File.WriteAllLines(Ruta, lineas);
         }
@@ -53,8 +56,11 @@ public static class Archivos
             for (int i = 0; i < lineas.Length && Datos.Contador < Datos.Max; i++)
             {
                 string[] campos = lineas[i].Split('|');
-                if (campos.Length != 9 || !int.TryParse(campos[0], out int exp))
+                if (campos.Length != 12 || !int.TryParse(campos[0], out int exp))
                     continue; // línea dañada: se ignora
+
+                if (Usuarios.BuscarCuenta(campos[4]) == -1)
+                    continue; // destinatario inexistente (datos de una versión anterior)
 
                 int pos = Datos.Contador;
                 Datos.Expedientes[pos] = exp;
@@ -66,6 +72,9 @@ public static class Archivos
                 Datos.Fechas[pos] = campos[6];
                 Datos.RecibidoPor[pos] = campos[7];
                 Datos.Movimientos[pos] = campos[8];
+                Datos.Telefonos[pos] = campos[9];
+                Datos.Parentescos[pos] = campos[10];
+                Datos.Motivos[pos] = campos[11];
                 Datos.Contador++;
             }
             Console.WriteLine($"Se cargaron {Datos.Contador} trámite(s) desde el archivo.");
